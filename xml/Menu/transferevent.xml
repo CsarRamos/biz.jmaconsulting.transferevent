@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<menu>
+  <item>
+    <path>civicrm/event/transfer</path>
+    <title>Transfer Event</title>
+    <page_callback>CRM_TransferEvent_Form_TransferEvent</page_callback>
+    <access_arguments>edit event participants</access_arguments>
+  </item>
+</menu>
