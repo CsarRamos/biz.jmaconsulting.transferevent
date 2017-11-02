@@ -112,8 +112,6 @@ class CRM_TransferEvent_Form_TransferEvent extends CRM_Core_Form {
     $participantId = $this->_participantId;
     $eventId = $params['event_id'];
     CRM_TransferEvent_BAO_TransferEvent::updateEvent($participantId, $params['event_id']);
-    $url = CRM_Utils_System::url('civicrm/event/info', "reset=1&id={$eventId}");
-    CRM_Utils_System::redirect($url);
   }
 
 }
