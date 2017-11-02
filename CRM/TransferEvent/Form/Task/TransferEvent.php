@@ -47,12 +47,54 @@ class CRM_TransferEvent_Form_Task_TransferEvent extends CRM_Event_Form_Task {
   public function buildQuickForm() {
     CRM_Utils_System::setTitle(ts('Transfer Event for Participant(s)'));
     $session = CRM_Core_Session::singleton();
-    $this->addEntityRef('event_id', ts('Select Event'), array(
+    $eventFieldParams = array(
       'entity' => 'event',
-      'placeholder' => ts('- Select Event -'),
       'select' => array('minimumInputLength' => 0),
-    ));
+    );
+
+    $this->addEntityRef('event_id', ts('Select Event'), $eventFieldParams, TRUE);
     $this->addDefaultButtons(ts('Transfer Event'), 'done');
+    $this->addFormRule(array('CRM_TransferEvent_Form_Task_TransferEvent', 'formRule'), $this);
+  }
+
+  /**
+   * Validate email and name input
+   *
+   * return array $errors
+   */
+  public static function formRule($fields, $files, $self) {
+    $errors = array();
+    //To check if the user is already registered for the event.
+    if (!empty($fields['event_id'])) {
+      self::checkRegistration($fields, $self, $errors);
+    }
+    return empty($errors) ? TRUE : $errors;
+  }
+
+  /**
+   * Check contact details
+   *
+   * return @void
+   */
+  public static function checkRegistration($fields, $self, &$errors) {
+    // verify whether this contact already registered for this event
+    $statuses = array_flip(CRM_Event_PseudoConstant::participantStatus());
+    foreach ($self->_participantIds as $participantId) {
+      $contactId = civicrm_api3('Participant', 'getvalue', array(
+        'sequential' => 1,
+        'return' => "contact_id",
+        'id' => $participantId,
+      ));
+      $query = "SELECT event_id FROM civicrm_participant WHERE contact_id = " . $contactId . "
+        AND status_id = " . CRM_Utils_Array::value('Registered', $statuses);
+      $dao = CRM_Core_DAO::executeQuery($query);
+      while ($dao->fetch()) {
+        if ($dao->event_id == $fields['event_id']) {
+          $errors['event_id'] = CRM_Contact_BAO_Contact::displayName($contactId) . ts(" is already registered for this event");
+          break;
+        }
+      }
+    }
   }
 
   /**

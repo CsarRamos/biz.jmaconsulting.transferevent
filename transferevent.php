@@ -82,6 +82,22 @@ function transferevent_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function transferevent_civicrm_managed(&$entities) {
+  $entities[] = array(
+    'module' => 'biz.jmaconsulting.transferevent',
+    'name' => 'transferevent',
+    'update' => 'never',
+    'entity' => 'OptionValue',
+    'params' => array(
+      'label' => "Event Transferred",
+      'name' => "event_transfer",
+      'description' => "The event has been transferred for a single participant.",
+      'option_group_id' => 'activity_type',
+      'component_id' => CRM_Core_Component::getComponentID('CiviEvent'),
+      'is_reserved' => 1,
+      'is_active' => 1,
+      'version' => 3,
+    ),
+  );
   _transferevent_civix_civicrm_managed($entities);
 }
 
