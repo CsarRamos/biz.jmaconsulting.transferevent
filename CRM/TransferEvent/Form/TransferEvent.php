@@ -27,74 +27,7 @@ class CRM_TransferEvent_Form_TransferEvent extends CRM_Core_Form {
    * @var string
    *
    */
-  protected $_participant_id;
-  /**
-   * from event id
-   *
-   * @var string
-   *
-   */
-  protected $_from_event_id;
-  /**
-   * to event id
-   *
-   * @var string
-   */
-  protected $_to_event_id;
-  /**
-   * event title
-   *
-   * @var string
-   */
-  protected $_event_title;
-  /**
-   * event title
-   *
-   * @var string
-   */
-  protected $_event_start_date;
-  /**
-   * action
-   *
-   * @var string
-   */
-  public $_action;
-  /**
-   * event object
-   *
-   * @var string
-   */
-  protected $_event = array();
-  /**
-   * participant object
-   *
-   * @var string
-   */
-  protected $_participant = array();
-  /**
-   * participant values
-   *
-   * @array string
-   */
-  protected $_part_values;
-  /**
-   * details
-   *
-   * @array string
-   */
-  protected $_details = array();
-  /**
-   * contact_id
-   *
-   * @array string
-   */
-  protected $_contact_id;
-  /**
-   * contact_id
-   *
-   * @array string
-   */
-  protected $contact_id;
+  protected $_participantId;
 
   /**
    * Get source values for transfer based on participant id in URL. Line items will
@@ -132,6 +65,10 @@ class CRM_TransferEvent_Form_TransferEvent extends CRM_Core_Form {
       )
     );
     $this->addFormRule(array('CRM_TransferEvent_Form_TransferEvent', 'formRule'), $this);
+    $eventType = civicrm_api3('Event', 'getValue', array('return' => 'event_type_id', 'id' => $this->_params['event_id']));
+    $events = CRM_TransferEvent_BAO_TransferEvent::getValidEvents();
+    $this->assign('allEvents', $events);
+    $this->assign('currentType', $eventType);
     parent::buildQuickForm();
   }
 

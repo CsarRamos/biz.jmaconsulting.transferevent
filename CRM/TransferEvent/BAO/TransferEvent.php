@@ -80,4 +80,12 @@ class CRM_TransferEvent_BAO_TransferEvent extends CRM_Event_BAO_Event {
     $statusMsg = ts('Event registration information for %1 has been updated.', array(1 => $params['display_name']));
     CRM_Core_Session::setStatus($statusMsg, ts('Registration Transferred'), 'success');
   }
+
+  public static function getValidEvents() {
+    $events = civicrm_api3('Event', 'get', array('return' => 'event_type_id'));
+    foreach ($events['values'] as $key => $values) {
+      $event[$values['id']] = $values['event_type_id'];
+    }
+    return json_encode($event);
+  }
 }

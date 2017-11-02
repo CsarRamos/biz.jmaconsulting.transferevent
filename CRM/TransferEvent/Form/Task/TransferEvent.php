@@ -90,9 +90,11 @@ class CRM_TransferEvent_Form_Task_TransferEvent extends CRM_Event_Form_Task {
       $dao = CRM_Core_DAO::executeQuery($query);
       while ($dao->fetch()) {
         if ($dao->event_id == $fields['event_id']) {
-          $errors['event_id'] = CRM_Contact_BAO_Contact::displayName($contactId) . ts(" is already registered for this event");
-          break;
+          $errorContacts[] = CRM_Contact_BAO_Contact::displayName($contactId);
         }
+      }
+      if (!empty($errorContacts)) {
+        $errors['event_id'] = ts('The following contact(s): ') . implode(", ", $errorContacts) . ts(' are already registered for this event.');
       }
     }
   }
